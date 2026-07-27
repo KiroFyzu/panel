@@ -65,6 +65,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('extensions.themes', function () {
             return new Theme();
         });
+
+        // Bind a Guzzle client for the billing services (Pakasir).
+        $this->app->bind(\GuzzleHttp\Client::class, function () {
+            return new \GuzzleHttp\Client([
+                'timeout' => 30,
+                'connect_timeout' => 5,
+                'http_errors' => false,
+            ]);
+        });
     }
 
     /**

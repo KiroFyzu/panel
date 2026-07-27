@@ -115,6 +115,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Billing (Pakasir)</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Billing Enabled</label>
+                                <div>
+                                    <select class="form-control" name="billing:enabled">
+                                        <option value="false" @if(old('billing:enabled', config('billing.enabled') ? 'true' : 'false') == 'false') selected @endif>Disabled</option>
+                                        <option value="true" @if(old('billing:enabled', config('billing.enabled') ? 'true' : 'false') == 'true') selected @endif>Enabled</option>
+                                    </select>
+                                    <p class="text-muted small">Aktifkan landing page publik + checkout Pakasir.</p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Pakasir Project</label>
+                                <div>
+                                    <input type="text" class="form-control" name="billing:pakasir_project" value="{{ old('billing:pakasir_project', config('billing.pakasir_project')) }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Pakasir API Key</label>
+                                <div>
+                                    <input type="text" class="form-control" name="billing:pakasir_api_key" value="{{ old('billing:pakasir_api_key', config('billing.pakasir_api_key')) }}">
+                                    <p class="text-muted small">Dapatkan dari dashboard <a href="https://app.pakasir.com" target="_blank">app.pakasir.com</a>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box box-primary">
                     <div class="box-footer">
                         {{ csrf_field() }}

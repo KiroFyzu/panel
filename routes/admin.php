@@ -8,6 +8,20 @@ Route::get('/', [Admin\BaseController::class, 'index'])->name('admin.index');
 
 /*
 |--------------------------------------------------------------------------
+| Price Packages
+|--------------------------------------------------------------------------
+*/
+Route::group(['prefix' => 'packages'], function () {
+    Route::get('/', [Admin\PricePackageController::class, 'index'])->name('admin.packages.index');
+    Route::get('/new', [Admin\PricePackageController::class, 'create'])->name('admin.packages.create');
+    Route::post('/', [Admin\PricePackageController::class, 'store'])->name('admin.packages.store');
+    Route::get('/{package:id}/edit', [Admin\PricePackageController::class, 'edit'])->name('admin.packages.edit');
+    Route::patch('/{package:id}', [Admin\PricePackageController::class, 'update'])->name('admin.packages.update');
+    Route::delete('/{package:id}', [Admin\PricePackageController::class, 'destroy'])->name('admin.packages.destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Location Controller Routes
 |--------------------------------------------------------------------------
 |

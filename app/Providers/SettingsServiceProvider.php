@@ -30,6 +30,9 @@ class SettingsServiceProvider extends ServiceProvider
         'pterodactyl:client_features:allocations:enabled',
         'pterodactyl:client_features:allocations:range_start',
         'pterodactyl:client_features:allocations:range_end',
+        'billing:enabled',
+        'billing:pakasir_project',
+        'billing:pakasir_api_key',
     ];
 
     /**

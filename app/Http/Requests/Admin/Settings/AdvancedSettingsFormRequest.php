@@ -31,6 +31,9 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
                 'between:1024,65535',
                 'gt:pterodactyl:client_features:allocations:range_start',
             ],
+            'billing:enabled' => 'required|in:true,false',
+            'billing:pakasir_project' => 'nullable|string|max:191',
+            'billing:pakasir_api_key' => 'nullable|string|max:191',
         ];
     }
 
@@ -45,6 +48,9 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
             'pterodactyl:client_features:allocations:enabled' => 'Auto Create Allocations Enabled',
             'pterodactyl:client_features:allocations:range_start' => 'Starting Port',
             'pterodactyl:client_features:allocations:range_end' => 'Ending Port',
+            'billing:enabled' => 'Billing Enabled',
+            'billing:pakasir_project' => 'Pakasir Project',
+            'billing:pakasir_api_key' => 'Pakasir API Key',
         ];
     }
 }
