@@ -79,4 +79,12 @@ class InvoiceService
 
         return true;
     }
+
+    /**
+     * Return the configured Pakasir project slug (for webhook signature checks).
+     */
+    public function getPakasirProject(): ?string
+    {
+        return $this->pakasir->getProject();
+    }
 }

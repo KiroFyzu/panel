@@ -19,6 +19,14 @@ class PakasirService
     }
 
     /**
+     * Return the configured Pakasir project slug.
+     */
+    public function getProject(): string
+    {
+        return (string) $this->settings->get('settings::billing:pakasir_project', env('PAKASIR_PROJECT', ''));
+    }
+
+    /**
      * Create a QRIS transaction via Pakasir.
      *
      * @return array{payment_number: string, fee: int, total_payment: int, expired_at: string}
