@@ -72,11 +72,21 @@ export default () => {
                                 <ServerRow key={server.uuid} server={server} css={index > 0 ? tw`mt-2` : undefined} />
                             ))
                         ) : (
-                            <p css={tw`text-center text-sm text-neutral-400`}>
-                                {showOnlyAdmin
-                                    ? 'There are no other servers to display.'
-                                    : 'There are no servers associated with your account.'}
-                            </p>
+                            <div css={tw`text-center`}>
+                                <p css={tw`text-sm text-neutral-400`}>
+                                    {showOnlyAdmin
+                                        ? 'There are no other servers to display.'
+                                        : 'There are no servers associated with your account.'}
+                                </p>
+                                {!showOnlyAdmin && (
+                                    <a
+                                        href={'/billing/packages'}
+                                        css={tw`mt-4 inline-block px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition`}
+                                    >
+                                        Beli Server Sekarang
+                                    </a>
+                                )}
+                            </div>
                         )
                     }
                 </Pagination>

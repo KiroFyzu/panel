@@ -21,6 +21,18 @@ class BillingController extends Controller
     }
 
     /**
+     * Show all active packages (for authenticated users browsing).
+     */
+    public function packages(Request $request): View
+    {
+        $packages = PricePackage::where('is_active', true)->orderBy('sort')->get();
+
+        return view('billing.packages', [
+            'packages' => $packages,
+        ]);
+    }
+
+    /**
      * Show checkout page: pick node + egg for the chosen package.
      */
     public function checkout(Request $request, string $slug): View|RedirectResponse

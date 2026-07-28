@@ -20,6 +20,7 @@ Route::get('/locales/locale.json', Base\LocaleController::class)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
+    Route::get('/billing/packages', [Billing\BillingController::class, 'packages'])->name('billing.packages');
     Route::get('/billing/packages/{slug}/checkout', [Billing\BillingController::class, 'checkout'])->name('billing.checkout');
     Route::post('/billing/packages/{slug}/pay', [Billing\BillingController::class, 'pay'])->name('billing.pay');
     Route::get('/billing/invoices/{invoice}', [Billing\InvoiceController::class, 'show'])->name('billing.invoice.show');
