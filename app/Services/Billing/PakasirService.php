@@ -27,11 +27,11 @@ class PakasirService
      */
     public function createQrisTransaction(string $orderId, int $amount): array
     {
-        $project = (string) $this->settings->get('settings::billing:pakasir_project', '');
-        $apiKey = (string) $this->settings->get('settings::billing:pakasir_api_key', '');
+        $project = (string) $this->settings->get('settings::billing:pakasir_project', env('PAKASIR_PROJECT', ''));
+        $apiKey = (string) $this->settings->get('settings::billing:pakasir_api_key', env('PAKASIR_API_KEY', ''));
 
         if ($project === '' || $apiKey === '') {
-            throw new Exception('Pakasir project or api_key is not configured in admin settings.');
+            throw new Exception('Pakasir project or api_key is not configured. Set PAKASIR_PROJECT & PAKASIR_API_KEY in .env or via admin settings.');
         }
 
         try {
