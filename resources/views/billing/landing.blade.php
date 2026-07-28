@@ -30,7 +30,7 @@
                         <a href="{{ route('account') }}" class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-medium transition">Dashboard</a>
                     @else
                         <a href="{{ route('auth.login') }}" class="px-4 py-2 rounded-md bg-neutral-800 hover:bg-neutral-700 text-white font-medium transition border border-neutral-700">Login</a>
-                        <a href="{{ route('auth.login') }}" class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-medium transition">Login / Daftar</a>
+                        <a href="{{ route('auth.register') }}" class="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-medium transition">Daftar</a>
                     @endauth
                 </nav>
             </div>
