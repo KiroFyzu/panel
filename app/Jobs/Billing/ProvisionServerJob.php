@@ -71,11 +71,11 @@ class ProvisionServerJob implements ShouldQueue
             'threads' => null,
             'oom_disabled' => true,
             'startup' => $egg->startup,
-            'image' => is_array($egg->docker_images) ? reset($egg->docker_images) : $egg->docker_images,
+            'image' => $this->firstDockerImage($egg),
             'database_limit' => 1,
             'allocation_limit' => 1,
             'backup_limit' => 1,
-            'environment' => $egg->variables->mapWithKeys(fn($v) => [$v->env_variable => $v->default_value])->toArray(),
+            'environment' => $this->buildEnvironment($egg),
             'start_on_completion' => true,
         ];
 
@@ -104,5 +104,89 @@ class ProvisionServerJob implements ShouldQueue
             }
             throw $e;
         }
+    }
+
+    protected function firstDockerImage(\Pterodactyl\Models\Egg $egg): string
+    {
+        $images = $egg->docker_images;
+        if (is_string($images)) {
+            $decoded = json_decode($images, true);
+            $images = is_array($decoded) ? $decoded : [];
+        }
+        if (is_array($images) && !empty($images)) {
+            return (string) reset($images);
+        }
+        return (string) $images;
+    }
+
+    protected function buildEnvironment(\Pterodactyl\Models\Egg $egg): array
+    {
+        $env = [];
+        foreach ($egg->variables as $variable) {
+            $value = $variable->default_value;
+            if ($value === null || $value === '') {
+                $value = $this->inferDefault($variable);
+            }
+            $env[$variable->env_variable] = $value;
+        }
+
+        return $env;
+    }
+
+    protected function inferDefault(\Pterodactyl\Models\EggVariable $variable): string
+    {
+        $rules = (string) $variable->rules;
+
+        // numeric|integer|max:N|min:N → 0
+        if (preg_match('/\b(integer|numeric|digits)\b/', $rules)) {
+            if (preg_match('/\bbetween:(\d+),(\d+)\b/', $rules, $m)) {
+                return (string) ((int) $m[1] + (int) $m[2] / 2);
+            }
+            if (preg_match('/\bmax:(\d+)\b/', $rules, $m)) {
+                return $m[1] === '1' ? '0' : '1';
+            }
+            return '0';
+        }
+
+        // boolean → "0"
+        if (preg_match('/\bboolean\b/', $rules)) {
+            return '0';
+        }
+
+        // url → http://localhost
+        if (preg_match('/\burl\b/', $rules)) {
+            return 'http://localhost';
+        }
+
+        // email
+        if (preg_match('/\bemail\b/', $rules)) {
+            return 'noreply@example.com';
+        }
+
+        // in:a,b,c → first option
+        if (preg_match('/\bin:([^|]+)/', $rules, $m)) {
+            $opts = explode(',', trim($m[1]));
+            return trim($opts[0] ?? '');
+        }
+
+        // regex:/.../ → look for hard-coded literal
+        if (preg_match('/regex:\/([^\/]+)\/([a-z]*)/', $rules, $m)) {
+            $literal = $m[1];
+            if (str_contains($literal, 'server.jar')) {
+                return 'server.jar';
+            }
+            // Domain-shaped regex (CERTBOT_DOMAIN style: /^([\w\/\.\-\\:]+)$/)
+            if (preg_match('/[a-zA-Z0-9_\\.\\\\\\/\\-\\:]/', $literal) && (str_contains($literal, '.') || str_contains($literal, ':'))) {
+                return 'example.com';
+            }
+            return 'placeholder';
+        }
+
+        // string|max:N
+        if (preg_match('/\bstring\b/', $rules)) {
+            return '0';
+        }
+
+        return '';
     }
 }
