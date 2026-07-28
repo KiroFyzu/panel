@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import register from '@/api/auth/register';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
+import { object, ref, string } from 'yup';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
@@ -61,7 +61,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     .min(8, 'Password minimal 8 karakter.'),
                 password_confirmation: string()
                     .required('Konfirmasi password harus diisi.')
-                    .oneOf([], 'Password tidak cocok.'),
+                    .oneOf([ref('password')], 'Password tidak cocok.'),
             })}
         >
             {({ isSubmitting }) => (
