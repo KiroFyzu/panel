@@ -62,6 +62,52 @@
             </div>
         </section>
 
+        {{-- Purchase History --}}
+        @if($invoices->isNotEmpty())
+        <section class="max-w-7xl mx-auto px-6 pb-20">
+            <h2 class="text-2xl font-bold mb-6">Riwayat Pembelian</h2>
+            <div class="overflow-x-auto rounded-xl border border-neutral-700">
+                <table class="w-full text-sm">
+                    <thead class="bg-neutral-800 text-neutral-400 uppercase tracking-wider text-xs">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Invoice</th>
+                            <th class="px-4 py-3 text-left">Paket</th>
+                            <th class="px-4 py-3 text-left">Status</th>
+                            <th class="px-4 py-3 text-left">Total</th>
+                            <th class="px-4 py-3 text-left">Tanggal</th>
+                            <th class="px-4 py-3 text-left">Server</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-neutral-700">
+                        @foreach($invoices as $inv)
+                        <tr class="hover:bg-neutral-800/40 transition">
+                            <td class="px-4 py-3 font-mono text-xs">{{ $inv->order_id }}</td>
+                            <td class="px-4 py-3">{{ $inv->package->name ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-0.5 rounded-full text-xs font-medium
+                                    @if($inv->status === 'paid') bg-green-700/40 text-green-300 border border-green-600
+                                    @elseif($inv->status === 'pending') bg-yellow-700/40 text-yellow-300 border border-yellow-600
+                                    @else bg-red-700/40 text-red-300 border border-red-600 @endif">
+                                    {{ strtoupper($inv->status) }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">Rp {{ number_format($inv->total_payment, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-neutral-400">{{ $inv->created_at->format('d M Y H:i') }}</td>
+                            <td class="px-4 py-3">
+                                @if($inv->server_id)
+                                    <a href="/server/{{ $inv->server_id }}" class="text-blue-400 hover:underline">Lihat</a>
+                                @else
+                                    <span class="text-neutral-600">-</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        @endif
+
         {{-- Footer --}}
         <footer class="border-t border-neutral-800 py-6 text-center text-sm text-neutral-500">
             &copy; {{ date('Y') }} {{ $appName }}. Powered by Pterodactyl Panel.

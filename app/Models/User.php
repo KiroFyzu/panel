@@ -247,6 +247,14 @@ class User extends Model implements
     }
 
     /**
+     * Invoices for this user.
+     */
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\RecoveryToken, $this>
      */
     public function recoveryTokens(): HasMany

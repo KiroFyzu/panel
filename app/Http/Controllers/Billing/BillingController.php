@@ -21,14 +21,21 @@ class BillingController extends Controller
     }
 
     /**
-     * Show all active packages (for authenticated users browsing).
+     * Show all active packages + user's purchase history.
      */
     public function packages(Request $request): View
     {
         $packages = PricePackage::where('is_active', true)->orderBy('sort')->get();
 
+        $invoices = $request->user()->invoices()
+            ->with(['package', 'server'])
+            ->orderBy('created_at', 'desc')
+            ->limit(20)
+            ->get();
+
         return view('billing.packages', [
             'packages' => $packages,
+            'invoices' => $invoices,
             'appName' => config('app.name', 'Pterodactyl'),
         ]);
     }
