@@ -107,6 +107,14 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             Forgot password?
                         </Link>
                     </div>
+                    <div css={tw`mt-4 text-center`}>
+                        <Link
+                            to={'/auth/register'}
+                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                        >
+                            Belum punya akun? Daftar
+                        </Link>
+                    </div>
                 </LoginFormContainer>
             )}
         </Formik>
