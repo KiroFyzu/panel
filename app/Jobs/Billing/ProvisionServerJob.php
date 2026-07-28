@@ -52,11 +52,13 @@ class ProvisionServerJob implements ShouldQueue
             throw new DisplayException("No free allocations available on node '{$node->name}' for invoice {$invoice->order_id}.");
         }
 
-        $serverName = $package->name . '-' . $user->username . '-' . substr($invoice->order_id, -4);
+        $serverName = $package->name . '-' . $user->username . '-' . substr($invoice->order_id, -8);
+
+        $expiresAt = $this->computeExpiresAt($invoice, $package);
 
         $data = [
             'name' => $serverName,
-            'description' => "Auto-provisioned from invoice {$invoice->order_id}",
+            'description' => "Auto-build server from invoice {$invoice->order_id}",
             'owner_id' => $user->id,
             'node_id' => $node->id,
             'allocation_id' => $allocation->id,
@@ -77,6 +79,7 @@ class ProvisionServerJob implements ShouldQueue
             'backup_limit' => 1,
             'environment' => $this->buildEnvironment($egg),
             'start_on_completion' => true,
+            'expires_at' => $expiresAt,
         ];
 
         try {
@@ -98,12 +101,24 @@ class ProvisionServerJob implements ShouldQueue
                 ->latest('id')
                 ->first();
             if ($created) {
+                if ($created->expires_at === null) {
+                    $created->forceFill(['expires_at' => $expiresAt])->save();
+                }
                 $invoice->server_id = $created->id;
                 $invoice->save();
                 return;
             }
             throw $e;
         }
+    }
+
+    protected function computeExpiresAt(Invoice $invoice, \Pterodactyl\Models\PricePackage $package): Carbon
+    {
+        $start = $invoice->paid_at instanceof Carbon
+            ? $invoice->paid_at
+            : ($invoice->paid_at ? Carbon::parse($invoice->paid_at) : Carbon::now());
+
+        return $start->copy()->addDays($package->period_days);
     }
 
     protected function firstDockerImage(\Pterodactyl\Models\Egg $egg): string

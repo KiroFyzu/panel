@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $ram
  * @property int $cpu
  * @property int $disk
+ * @property int $period_days
  * @property int $sort
  * @property bool $is_active
  */
@@ -26,7 +27,7 @@ class PricePackage extends Model
 
     protected $fillable = [
         'name', 'slug', 'description', 'price', 'old_price',
-        'ram', 'cpu', 'disk', 'sort', 'is_active',
+        'ram', 'cpu', 'disk', 'period_days', 'sort', 'is_active',
     ];
 
     protected $casts = [
@@ -35,9 +36,16 @@ class PricePackage extends Model
         'ram' => 'integer',
         'cpu' => 'integer',
         'disk' => 'integer',
+        'period_days' => 'integer',
         'sort' => 'integer',
         'is_active' => 'boolean',
     ];
+
+    public function getPeriodDaysAttribute(): int
+    {
+        $value = (int) ($this->attributes['period_days'] ?? 0);
+        return $value > 0 ? $value : 30;
+    }
 
     public function nodes(): BelongsToMany
     {
