@@ -72,8 +72,8 @@ class PakasirService
      */
     public function checkTransaction(string $orderId, int $amount): array
     {
-        $project = (string) $this->settings->get('settings::billing:pakasir_project', '');
-        $apiKey = (string) $this->settings->get('settings::billing:pakasir_api_key', '');
+        $project = (string) $this->settings->get('settings::billing:pakasir_project', env('PAKASIR_PROJECT', ''));
+        $apiKey = (string) $this->settings->get('settings::billing:pakasir_api_key', env('PAKASIR_API_KEY', ''));
 
         $response = $this->client->get(self::BASE_URL . '/transactiondetail', [
             'query' => [
