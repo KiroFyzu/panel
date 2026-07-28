@@ -29,6 +29,7 @@ class BillingController extends Controller
 
         return view('billing.packages', [
             'packages' => $packages,
+            'appName' => config('app.name', 'Pterodactyl'),
         ]);
     }
 
